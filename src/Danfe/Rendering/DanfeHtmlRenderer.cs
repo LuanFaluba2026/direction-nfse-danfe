@@ -114,7 +114,7 @@ public sealed class DanfeHtmlRenderer
         else if (municpioISSQN == null)
             warnings.MunicipioNotFound("infNFSe.cLocIncid");
 
-        var logoBase64 = Helper.GetLogo(Path.Combine(AppContext.BaseDirectory, municipioPrestador?.LogoPath ?? string.Empty));
+        var logoBase64 = GetLogoMunicipio(municipioPrestador);
 
         // Logo da nfse
         var logoNfse = _options.LogoNFSePath != null ? Helper.GetLogo(_options.LogoNFSePath) : Helper.GetLogo(Path.Combine(AppContext.BaseDirectory, "Assets", "Logos", "nfse.png"));
@@ -304,6 +304,15 @@ public sealed class DanfeHtmlRenderer
         }
 
         return (template, warnings.Warnings);
+    }
+
+    private string? GetLogoMunicipio(MunicipiosIbge.Municipio? municipio)
+    {
+        var imageCodigoIbge = Path.Combine(AppContext.BaseDirectory, "Assets", "Logos", $"{municipio?.CodigoIbge}.png");
+        if (File.Exists(imageCodigoIbge))
+            return Helper.GetLogo(imageCodigoIbge);
+
+        return Helper.GetLogo(Path.Combine(AppContext.BaseDirectory, municipio?.LogoPath ?? string.Empty));
     }
     private Dictionary<string, string> BuildTomadorMap(InfDPS infDps, DanfeWarningCollector warnings)
     {
